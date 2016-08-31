@@ -1,0 +1,8 @@
+defmodule ELITest do
+  use ExUnit.Case
+  doctest ELI
+
+  test "the truth" do
+    assert 1 + 1 == 2
+  end
+end
