@@ -1,4 +1,6 @@
 defmodule ELI.Ohai do
+  require Logger
+
   def start_link(client) do
     GenServer.start_link(__MODULE__, [client])
   end
@@ -9,8 +11,7 @@ defmodule ELI.Ohai do
   end
 
   def handle_info({:received, msg, nick, channel}, client) do
-    debug "received:"
-    IO.inspect msg
+    Logger.info "received -> #{msg}"
 
     if String.contains?(msg, "hi") do
       ExIrc.Client.msg client, :privmsg, channel, "hi"
@@ -19,11 +20,5 @@ defmodule ELI.Ohai do
     {:noreply, client}
   end
 
-  def handle_info(_msg, client) do
-    {:noreply, client}
-  end
-
-  defp debug(msg) do
-    IO.puts IO.ANSI.yellow() <> msg <> IO.ANSI.reset()
-  end
+  def handle_info(_msg, client), do: {:noreply, client}
 end

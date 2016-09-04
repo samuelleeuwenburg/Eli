@@ -1,5 +1,8 @@
 defmodule ELI.Login do
-  def start_link(client, channels) do
+  require Logger
+
+  def start_link(client) do
+    {:ok, channels} = Application.get_env(:eli, :bot) |> Map.fetch(:channel)
     GenServer.start_link(__MODULE__, [client, channels])
   end
 
@@ -9,16 +12,10 @@ defmodule ELI.Login do
   end
 
   def handle_info(:logged_in, state = {client, channels}) do
-    debug "Logged in to server"
+    Logger.info "Logged in to server"
     channels |> Enum.map(&ExIrc.Client.join client, &1)
     {:noreply, state}
   end
 
-  def handle_info(_msg, state) do
-    {:noreply, state}
-  end
-
-  defp debug(msg) do
-    IO.puts IO.ANSI.yellow() <> msg <> IO.ANSI.reset()
-  end
+  def handle_info(_msg, client), do: {:noreply, client}
 end

@@ -2,6 +2,16 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :eli, bot: %{
+  :host => "irc.freenode.org",
+  :port => 6667,
+  :nick => "elibot",
+  :pass => nil,
+  :user => "elibot",
+  :name => "Eli Bot",
+  :channel => ["#elibot"]
+}
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
