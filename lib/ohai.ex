@@ -19,9 +19,7 @@ defmodule ELI.Ohai do
     {:noreply, client}
   end
 
-  def handle_info(msg, client) do
-    debug "unknown:"
-    IO.inspect msg
+  def handle_info(_msg, client) do
     {:noreply, client}
   end
 
