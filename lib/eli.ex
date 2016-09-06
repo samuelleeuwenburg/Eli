@@ -9,7 +9,7 @@ defmodule ELI do
     children = [
       worker(ELI.Connection, [client]),
       worker(ELI.Login, [client]),
-      worker(ELI.Ohai, [client]),
+      supervisor(ELI.PluginSupervisor, [client])
     ]
 
     opts = [strategy: :one_for_one, name: ELI.Supervisor]
