@@ -21,25 +21,15 @@ defmodule ELI.Ohai do
 
   def handle_info(_msg, client), do: {:noreply, client}
 
-  @doc """
-    ## Examples
-      iex> ELI.Ohai.test "Hi Eli"
-      true
-      iex> ELI.Ohai.test "foo Eli"
-      false
-  """
   def test(msg) do
+    %{nick: nick} = Application.get_env(:eli, :bot)
+
     case String.downcase msg do
-      "hi eli" -> true
-      "hello eli" -> true
+      "hi " <> x when x == nick -> true
+      "hello " <> x when x == nick -> true
       _ -> false
     end
   end
 
-  @doc """
-    ## Examples
-      iex> ELI.Ohai.reply "foo"
-      "hello foo"
-  """
   def reply(nick), do: "hello #{nick}"
 end
