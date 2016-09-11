@@ -14,7 +14,7 @@ defmodule ELI.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :exirc],
+    [applications: [:logger, :exirc, :httpoison],
      mod: {ELI, []}]
   end
 
@@ -28,6 +28,10 @@ defmodule ELI.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:exirc, "~> 0.11.0"}]
+    [
+      {:exirc, "~> 0.11.0"},
+      {:httpoison, "~> 0.9.0"},
+      {:floki, "~> 0.10.1"}
+    ]
   end
 end

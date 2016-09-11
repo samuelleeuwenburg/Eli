@@ -23,10 +23,17 @@ defmodule ELI.Ohai do
 
   def test(msg) do
     %{nick: nick} = Application.get_env(:eli, :bot)
+    message = String.downcase msg
+    regex = ~r/@?#{nick}:?/
 
-    case String.downcase msg do
-      "hi " <> x when x == nick -> true
-      "hello " <> x when x == nick -> true
+    unless Regex.match?(regex, message), do: false
+
+    message = String.replace message, regex, ""
+
+    case String.strip message do
+      "hi" -> true
+      "hello" -> true
+      "hey" -> true
       _ -> false
     end
   end
