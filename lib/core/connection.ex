@@ -19,13 +19,12 @@ defmodule ELI.Connection do
         false -> acc
       end
     end)
-
     GenServer.start_link(__MODULE__, [%{state | client: client}])
   end
 
   def init([state]) do
     ExIrc.Client.add_handler state.client, self
-    ExIrc.Client.connect! state.client, state.host, state.port
+    ExIrc.Client.connect_ssl! state.client, state.host, state.port
     {:ok, state}
   end
 
