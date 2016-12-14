@@ -1,4 +1,4 @@
-defmodule ELI.UD do
+defmodule ELI.Google do
   require Logger
 
   def start_link(client) do
@@ -10,12 +10,11 @@ defmodule ELI.UD do
     {:ok, client}
   end
 
-  def handle_info({:received, msg, _info, channel}, client) do
+  def handle_info({:received, msg, info, channel}, client) do
     if test(msg) do
       reply = get_query(msg) |> query
       ExIrc.Client.msg client, :privmsg, channel, reply
     end
-
     {:noreply, client}
   end
 
@@ -24,7 +23,7 @@ defmodule ELI.UD do
   def test(msg) do
     %{nick: nick} = Application.get_env(:eli, :bot)
     message = String.downcase msg
-    regex = ~r/^@?#{nick}:? (.*[^\?])\?+$/
+    regex = ~r/^@?#{nick}:? g(oogle)? (.+)$/
 
     Regex.match? regex, message
   end
@@ -32,7 +31,7 @@ defmodule ELI.UD do
   def get_query(msg) do
     %{nick: nick} = Application.get_env(:eli, :bot)
     message = String.downcase msg
-    regex = ~r/^@?#{nick}:? (?<query>.*[^\?])\?+$/
+    regex = ~r/^@?#{nick}:? g(oogle)? (?<query>.+)$/
 
     case Regex.named_captures regex, message do
       %{"query" => query} -> query
@@ -41,13 +40,23 @@ defmodule ELI.UD do
   end
 
   def query(query) do
+    {:ok, "yolo", "and more"}
+
     HTTPoison.start
-    url = "http://www.urbandictionary.com/define.php?term=#{query}"
+    url = "https://www.google.nl/search?q=#{query}"
     {:ok, %HTTPoison.Response{status_code: 200, body: body}} = HTTPoison.get(url)
 
-    meaning = Floki.find(body, ".meaning") |> List.first |> Floki.text
-    example = Floki.find(body, ".example") |> List.first |> Floki.text
+    description = Floki.find(body, ".st") |> List.first |> Floki.text
 
-    String.replace "#{meaning} -> _#{example}_", ~r/\n/, ""
+    {_, _, children} = Floki.find(body, "cite") |> List.first
+    url = List.foldl(children, "", fn (child, acc) ->
+      case child do
+        str when is_bitstring(str) -> acc <> str
+        node when is_tuple(node) -> acc <> Floki.text(node)
+        _ -> acc
+      end
+    end)
+
+    "#{description} -> #{url}" |> String.replace(~r/\r|\n/, "")
   end
 end

@@ -8,7 +8,8 @@ defmodule ELI.PluginSupervisor do
   def init(client) do
     children = [
       worker(ELI.Ohai, [client]),
-      worker(ELI.UD, [client])
+      worker(ELI.UD, [client]),
+      worker(ELI.Google, [client])
     ]
     supervise children, strategy: :one_for_one
   end
